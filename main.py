@@ -1,6 +1,8 @@
 from automato import Automato
 from gramatica import GramaticaRegular
 from conversao_gr_af import gr_para_afn
+from conversao_afn_afd import afn_para_afd
+from minimizacao_afd import minimizar_afd
 
 
 # ==========================
@@ -33,17 +35,39 @@ if afn is not None:
     print("\n===== AFN GERADO A PARTIR DA GRAMÁTICA =====")
     afn.mostrar()
 
+    # ==========================
+    # CONVERSÃO AFN -> AFD
+    # ==========================
+    
+    afd_convertido = afn_para_afd(afn)
+    
+    print("\n===== AFD GERADO A PARTIR DO AFN =====")
+    afd_convertido.mostrar()
+    print(f"Número de estados do AFD: {len(afd_convertido.estados)}")
+
+    # ==========================
+    # MINIMIZAÇÃO DO AFD
+    # ==========================
+    
+    afd_minimizado = minimizar_afd(afd_convertido)
+    
+    print("\n===== AFD MINIMIZADO =====")
+    afd_minimizado.mostrar()
+    print(f"Número de estados do AFD Minimizado: {len(afd_minimizado.estados)}")
+
+    print("\n--- Comparando AFN vs AFD Minimizado ---")
+    cadeias_teste = ["0", "01", "10", "11", "011", "101", "010"]
+    for c in cadeias_teste:
+        res_afn = afn.processar_cadeia(c)
+        res_afd = afd_minimizado.processar_cadeia(c)
+        print(f"Cadeia '{c}': AFN={'OK' if res_afn else 'XX'} | AFD_Min={'OK' if res_afd else 'XX'} -> {'IGUAIS' if res_afn == res_afd else 'ERRO'}")
+
 
 # ==========================
-# TESTE DE SIMULAÇÃO DE AFD
+# TESTE DE AFD (Retrocompatibilidade)
 # ==========================
 
-estados = {"q0", "q1", "q2"}
-alfabeto = {"0", "1"}
-inicial = "q0"
-finais = {"q2"}
-
-transicoes = {
+transicoes_afd_manual = {
     ("q0", "0"): "q0",
     ("q0", "1"): "q1",
     ("q1", "0"): "q2",
@@ -52,23 +76,8 @@ transicoes = {
     ("q2", "1"): "q2"
 }
 
-afd = Automato(estados, alfabeto, transicoes, inicial, finais)
+afd_manual = Automato({"q0", "q1", "q2"}, {"0", "1"}, transicoes_afd_manual, "q0", {"q2"})
 
-print("\n===== AFD DE TESTE =====")
-afd.mostrar()
-
-cadeia_usuario = input("\nDigite sua cadeia para testar no AFD: ")
-
-cadeia_valida = True
-
-for simbolo in cadeia_usuario:
-    if simbolo not in alfabeto:
-        print("A cadeia contém símbolos inválidos.")
-        cadeia_valida = False
-        break
-
-if cadeia_valida:
-    if afd.processar_cadeia(cadeia_usuario):
-        print("A cadeia é aceita pelo autômato.")
-    else:
-        print("A cadeia é rejeitada pelo autômato.")
+print("\n===== AFD DE TESTE MANUAL (Exemplo 1*0) =====")
+afd_manual.mostrar()
+print("Cadeia '010' no AFD Manual:", "Aceita" if afd_manual.processar_cadeia("010") else "Rejeitada")

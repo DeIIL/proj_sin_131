@@ -26,33 +26,31 @@ class GramaticaRegular:
     
     def eh_regular(self):
         for nao_terminal, producoes in self.regras_producao.items():
-
             if nao_terminal not in self.simbolos_nao_terminais:
                 return False
 
-        for producao in producoes:
-
-            if producao == "":
-                return False
-
-            if producao == "&":
-                continue
-
-            if len(producao) == 1:
-                if producao not in self.simbolos_terminais:
+            for producao in producoes:
+                if producao == "":
                     return False
 
-            elif len(producao) == 2:
-                terminal = producao[0]
-                nao_terminal_destino = producao[1]
+                if producao == "&":
+                    continue
 
-                if terminal not in self.simbolos_terminais:
+                if len(producao) == 1:
+                    if producao not in self.simbolos_terminais:
+                        return False
+
+                elif len(producao) == 2:
+                    terminal = producao[0]
+                    nao_terminal_destino = producao[1]
+
+                    if terminal not in self.simbolos_terminais:
+                        return False
+
+                    if nao_terminal_destino not in self.simbolos_nao_terminais:
+                        return False
+
+                else:
                     return False
-
-                if nao_terminal_destino not in self.simbolos_nao_terminais:
-                    return False
-
-            else:
-                return False
 
         return True
