@@ -36,18 +36,20 @@ class GramaticaRegular:
                 if producao == "&":
                     continue
 
-                if len(producao) == 1:
-                    if producao not in self.simbolos_terminais:
-                        return False
+                # Caso 1: Produção de um único símbolo (terminal ou não-terminal)
+                # Exemplo: A -> a ou A -> B
+                if producao in self.simbolos_terminais or producao in self.simbolos_nao_terminais:
+                    continue
 
-                elif len(producao) == 2:
+                # Caso 2: Produção terminal seguido de não-terminal
+                # Exemplo: A -> aB
+                elif len(producao) >= 2:
                     terminal = producao[0]
-                    nao_terminal_destino = producao[1]
+                    nao_terminal_destino = producao[1:]
 
-                    if terminal not in self.simbolos_terminais:
-                        return False
-
-                    if nao_terminal_destino not in self.simbolos_nao_terminais:
+                    if terminal in self.simbolos_terminais and nao_terminal_destino in self.simbolos_nao_terminais:
+                        continue
+                    else:
                         return False
 
                 else:

@@ -1,0 +1,11 @@
+// Automato
+digraph {
+	graph [rankdir=LR]
+	start [shape=point]
+	q2 [shape=doublecircle]
+	q0 [shape=circle]
+	q1 [shape=circle]
+	start -> q0
+	q0 -> q1 [label=0]
+	q1 -> q2 [label=0]
+}

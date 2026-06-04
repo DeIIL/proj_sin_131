@@ -19,7 +19,21 @@ def gr_para_afn(gramatica):
     estados_finais = set()
     transicoes = {}
 
-    estado_final_extra = "FINAL"
+    # Gerar um nome de estado para o estado final extra que siga o padrão dos outros
+    # Tenta usar letras maiúsculas de A-Z que não estejam em uso
+    estado_final_extra = None
+    for i in range(ord('A'), ord('Z') + 1):
+        letra = chr(i)
+        if letra not in estados:
+            estado_final_extra = letra
+            break
+    
+    # Se todas as letras de A-Z estiverem em uso, adiciona um sufixo ao símbolo inicial
+    if estado_final_extra is None:
+        estado_final_extra = gramatica.simbolo_inicial + "*"
+        while estado_final_extra in estados:
+            estado_final_extra += "*"
+    
     estados.add(estado_final_extra)
     estados_finais.add(estado_final_extra)
 
@@ -31,30 +45,39 @@ def gr_para_afn(gramatica):
             if producao == "&":
                 estados_finais.add(nao_terminal)
 
-            # Caso 2: produção terminal
-            # Exemplo: A -> 0
-            elif len(producao) == 1:
-                simbolo_terminal = producao[0]
-
+            # Caso 2: produção de um único não-terminal (transição épsilon)
+            # Exemplo: A -> B
+            elif producao in gramatica.simbolos_nao_terminais:
                 adicionar_transicao(
                     transicoes,
                     nao_terminal,
-                    simbolo_terminal,
+                    "&",
+                    producao
+                )
+
+            # Caso 3: produção terminal
+            # Exemplo: A -> 0
+            elif producao in gramatica.simbolos_terminais:
+                adicionar_transicao(
+                    transicoes,
+                    nao_terminal,
+                    producao,
                     estado_final_extra
                 )
 
-            # Caso 3: terminal seguido de não terminal
+            # Caso 4: terminal seguido de não terminal
             # Exemplo: A -> 0B
-            elif len(producao) == 2:
+            elif len(producao) >= 2:
                 simbolo_terminal = producao[0]
-                nao_terminal_destino = producao[1]
+                nao_terminal_destino = producao[1:]
 
-                adicionar_transicao(
-                    transicoes,
-                    nao_terminal,
-                    simbolo_terminal,
-                    nao_terminal_destino
-                )
+                if simbolo_terminal in gramatica.simbolos_terminais and nao_terminal_destino in gramatica.simbolos_nao_terminais:
+                    adicionar_transicao(
+                        transicoes,
+                        nao_terminal,
+                        simbolo_terminal,
+                        nao_terminal_destino
+                    )
 
     afn = Automato(
         estados,
