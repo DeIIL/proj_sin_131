@@ -19,23 +19,27 @@ def gr_para_afn(gramatica):
     estados_finais = set()
     transicoes = {}
 
-    # Gerar um nome de estado para o estado final extra que siga o padrão dos outros
-    # Tenta usar letras maiúsculas de A-Z que não estejam em uso
-    estado_final_extra = None
-    for i in range(ord('A'), ord('Z') + 1):
-        letra = chr(i)
-        if letra not in estados:
-            estado_final_extra = letra
+    # Verifica se precisamos de um estado final extra para produções do tipo A -> a
+    precisa_final_extra = False
+    for producoes in gramatica.regras_producao.values():
+        for producao in producoes:
+            if len(producao) == 1 and producao != "&":
+                precisa_final_extra = True
+                break
+        if precisa_final_extra:
             break
-    
-    # Se todas as letras de A-Z estiverem em uso, adiciona um sufixo ao símbolo inicial
-    if estado_final_extra is None:
-        estado_final_extra = gramatica.simbolo_inicial + "*"
+
+    estado_final_extra = "FINAL"
+    if precisa_final_extra:
+        # Garante um nome único para o estado final extra
+        base_nome = "FINAL"
+        contador = 1
         while estado_final_extra in estados:
-            estado_final_extra += "*"
-    
-    estados.add(estado_final_extra)
-    estados_finais.add(estado_final_extra)
+            estado_final_extra = f"{base_nome}_{contador}"
+            contador += 1
+
+        estados.add(estado_final_extra)
+        estados_finais.add(estado_final_extra)
 
     for nao_terminal, producoes in gramatica.regras_producao.items():
         for producao in producoes:
@@ -45,8 +49,7 @@ def gr_para_afn(gramatica):
             if producao == "&":
                 estados_finais.add(nao_terminal)
 
-            # Caso 2: produção de um único não-terminal (transição épsilon)
-            # Exemplo: A -> B
+            # Caso A -> B (transição épsilon / produção unitária)
             elif producao in gramatica.simbolos_nao_terminais:
                 adicionar_transicao(
                     transicoes,
@@ -55,8 +58,7 @@ def gr_para_afn(gramatica):
                     producao
                 )
 
-            # Caso 3: produção terminal
-            # Exemplo: A -> 0
+            # Caso A -> a (produção terminal)
             elif producao in gramatica.simbolos_terminais:
                 adicionar_transicao(
                     transicoes,
@@ -65,13 +67,12 @@ def gr_para_afn(gramatica):
                     estado_final_extra
                 )
 
-            # Caso 4: terminal seguido de não terminal
-            # Exemplo: A -> 0B
-            elif len(producao) >= 2:
+            # Caso A -> aB (terminal seguido de não terminal)
+            elif len(producao) >= 2 and producao[0] in gramatica.simbolos_terminais:
                 simbolo_terminal = producao[0]
                 nao_terminal_destino = producao[1:]
 
-                if simbolo_terminal in gramatica.simbolos_terminais and nao_terminal_destino in gramatica.simbolos_nao_terminais:
+                if nao_terminal_destino in gramatica.simbolos_nao_terminais:
                     adicionar_transicao(
                         transicoes,
                         nao_terminal,

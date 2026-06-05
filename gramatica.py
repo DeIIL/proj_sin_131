@@ -36,23 +36,23 @@ class GramaticaRegular:
                 if producao == "&":
                     continue
 
-                # Caso 1: Produção de um único símbolo (terminal ou não-terminal)
-                # Exemplo: A -> a ou A -> B
-                if producao in self.simbolos_terminais or producao in self.simbolos_nao_terminais:
+                # Caso A -> a (terminal único)
+                if producao in self.simbolos_terminais:
                     continue
 
-                # Caso 2: Produção terminal seguido de não-terminal
-                # Exemplo: A -> aB
-                elif len(producao) >= 2:
+                # Caso A -> B (produção unitária / transição épsilon)
+                if producao in self.simbolos_nao_terminais:
+                    continue
+
+                # Caso A -> aB (terminal seguido de não-terminal)
+                # O terminal deve ser o primeiro caractere e o resto um não-terminal válido
+                if len(producao) >= 2:
                     terminal = producao[0]
                     nao_terminal_destino = producao[1:]
 
                     if terminal in self.simbolos_terminais and nao_terminal_destino in self.simbolos_nao_terminais:
                         continue
-                    else:
-                        return False
 
-                else:
-                    return False
+                return False
 
         return True
