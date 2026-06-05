@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QPixmap, QFont
 from PyQt5.QtCore import Qt
 
-# Importações do seu backend
+# importações backend
 from automato import Automato
 from gramatica import GramaticaRegular
 from conversao_gr_af import gr_para_afn
@@ -16,7 +16,7 @@ from conversao_afn_afd import afn_para_afd
 from minimizacao_afd import minimizar_afd
 from conversao_af_gr import af_para_gr
 
-# Tenta importar o graphviz
+#importar o graphviz
 try:
     import graphviz
     GRAPHVIZ_DISPONIVEL = True
@@ -26,11 +26,11 @@ except ImportError:
 
 def formatar_automato(automato):
     """Função auxiliar para formatar os dados do autômato em texto."""
-    texto = f"📌 ESTADOS: {', '.join(sorted(automato.estados))}\n"
-    texto += f"🔤 ALFABETO: {', '.join(sorted(automato.alfabeto))}\n"
-    texto += f"🏁 ESTADO INICIAL: {automato.estado_inicial}\n"
-    texto += f"🎯 ESTADOS FINAIS: {', '.join(sorted(automato.estados_finais))}\n"
-    texto += "\n🔄 TRANSIÇÕES:\n"
+    texto = f" ESTADOS: {', '.join(sorted(automato.estados))}\n"
+    texto += f" ALFABETO: {', '.join(sorted(automato.alfabeto))}\n"
+    texto += f" ESTADO INICIAL: {automato.estado_inicial}\n"
+    texto += f" ESTADOS FINAIS: {', '.join(sorted(automato.estados_finais))}\n"
+    texto += "\n TRANSIÇÕES:\n"
     for (estado, simbolo), destino in automato.transicoes.items():
         dst = ", ".join(destino) if isinstance(destino, set) else destino
         texto += f"  {estado} --({simbolo})--> {dst}\n"
@@ -44,9 +44,9 @@ class JanelaPrincipal(QWidget):
         self.tipo_atual = None  # "AFN", "AFD" ou "GR"
         
         self.setWindowTitle("Sistema de Autômatos Finitos e Gramáticas")
-        self.setGeometry(100, 100, 1100, 700) # Janela ampla estilo Dashboard
+        self.setGeometry(100, 100, 1100, 700) 
         
-        # Aplicando folha de estilo global (Dark Mode Elegante)
+        # style global
         self.setStyleSheet("""
             QWidget {
                 background-color: #1e1e24;
@@ -110,7 +110,7 @@ class JanelaPrincipal(QWidget):
         layout_principal.setContentsMargins(0, 0, 0, 0)
         layout_principal.setSpacing(0)
         
-        # ---------------- MENU LATERAL (SIDEBAR) ----------------
+        # menu lateral
         sidebar = QFrame()
         sidebar.setObjectName("Sidebar")
         sidebar.setFixedWidth(250)
@@ -123,11 +123,11 @@ class JanelaPrincipal(QWidget):
         lbl_menu.setAlignment(Qt.AlignCenter)
         layout_sidebar.addWidget(lbl_menu)
         
-        # Botões de Navegação
-        self.btn_nav_afn = QPushButton("📥 Inserir AFN")
-        self.btn_nav_gr = QPushButton("📝 Inserir Gramática")
-        self.btn_nav_res = QPushButton("⚙️ Operações & Grafo")
-        self.btn_nav_res.setEnabled(False) # Só ativa quando houver dados
+        # botaos
+        self.btn_nav_afn = QPushButton(" Inserir AFN")
+        self.btn_nav_gr = QPushButton(" Inserir Gramática")
+        self.btn_nav_res = QPushButton(" Operações & Grafo")
+        self.btn_nav_res.setEnabled(False) 
         
         self.btn_nav_afn.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(0))
         self.btn_nav_gr.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))
@@ -139,30 +139,30 @@ class JanelaPrincipal(QWidget):
         
         layout_sidebar.addStretch()
         
-        btn_sair = QPushButton("🚪 Sair do Programa")
+        btn_sair = QPushButton("Sair do Programa")
         btn_sair.setStyleSheet("background-color: #aa2222; text-align: center;")
         btn_sair.clicked.connect(self.close)
         layout_sidebar.addWidget(btn_sair)
         
-        # ---------------- ÁREA CENTRAL (STACKED WIDGET) ----------------
+        
         self.stacked_widget = QStackedWidget()
         
         self.criar_tela_inserir_afn()
         self.criar_tela_inserir_gr()
         self.criar_tela_operacoes_dashboard()
         
-        # Adiciona tudo ao layout master
+        
         layout_principal.addWidget(sidebar)
         layout_principal.addWidget(self.stacked_widget)
         self.setLayout(layout_principal)
 
-    # ---- TELA 1: CADASTRO AFN ----
+    # cadastro afn
     def criar_tela_inserir_afn(self):
         page = QWidget()
         layout = QVBoxLayout(page)
         layout.setContentsMargins(30, 30, 30, 30)
         
-        layout.addWidget(QLabel("<h2>📥 Cadastrar Novo AFN</h2>"))
+        layout.addWidget(QLabel("<h2> Cadastrar Novo AFN</h2>"))
         
         self.input_estados = QLineEdit()
         self.input_estados.setPlaceholderText("Ex: q0 q1 q2")
@@ -221,13 +221,13 @@ class JanelaPrincipal(QWidget):
         except Exception as e:
             QMessageBox.critical(self, "Erro", f"Falha ao gerar o Autômato:\n{str(e)}")
 
-    # ---- TELA 2: CADASTRO GRAMÁTICA ----
+    # cadastro gramatica
     def criar_tela_inserir_gr(self):
         page = QWidget()
         layout = QVBoxLayout(page)
         layout.setContentsMargins(30, 30, 30, 30)
         
-        layout.addWidget(QLabel("<h2>📝 Cadastrar Nova Gramática Regular</h2>"))
+        layout.addWidget(QLabel("<h2> Cadastrar Nova Gramática Regular</h2>"))
         
         self.input_nt = QLineEdit()
         self.input_nt.setPlaceholderText("Ex: S A B")
@@ -282,7 +282,7 @@ class JanelaPrincipal(QWidget):
         except Exception as e:
             QMessageBox.critical(self, "Erro", f"Falha ao gerar a Gramática:\n{str(e)}")
 
-    # ---- TELA 3: PAINEL DE OPERAÇÕES INTEGRADO (O SEGREDÃO) ----
+    # oprecaoes 
     def criar_tela_operacoes_dashboard(self):
         page = QWidget()
         layout_master = QVBoxLayout(page)
@@ -291,25 +291,25 @@ class JanelaPrincipal(QWidget):
         self.lbl_status_dashboard = QLabel("<h2>⚙️ Operações e Visualização Avançada</h2>")
         layout_master.addWidget(self.lbl_status_dashboard)
         
-        # Divisão horizontal: Esquerda (Ações/Texto), Direita (Grafo)
+        #
         painel_conteudo = QHBoxLayout()
         
-        # LADO ESQUERDO: Dados textuais e botões de cálculo
+        
         coluna_esquerda = QVBoxLayout()
         self.txt_display_dados = QTextBrowser()
         self.txt_display_dados.setFont(QFont("Consolas", 11))
         self.txt_display_dados.setFixedWidth(350)
         coluna_esquerda.addWidget(self.txt_display_dados)
         
-        # Container de botões operacionais dinâmicos
+        
         self.layout_botoes_op = QVBoxLayout()
         
-        self.btn_op_afd = QPushButton("⚡ Converter para AFD")
-        self.btn_op_simular = QPushButton("🎯 Simular Palavra")
-        self.btn_op_minimizar = QPushButton("📉 Minimizar AFD")
-        self.btn_op_gr = QPushButton("📝 Gerar Gramática Regular")
-        self.btn_op_afn = QPushButton("⚙️ Gerar AFN da Gramática")
-        self.btn_op_afd_de_gr = QPushButton("🚀 Gerar AFD Direto da GR")
+        self.btn_op_afd = QPushButton(" Converter para AFD")
+        self.btn_op_simular = QPushButton(" Simular Palavra")
+        self.btn_op_minimizar = QPushButton(" Minimizar AFD")
+        self.btn_op_gr = QPushButton(" Gerar Gramática Regular")
+        self.btn_op_afn = QPushButton(" Gerar AFN da Gramática")
+        self.btn_op_afd_de_gr = QPushButton(" Gerar AFD Direto da GR")
         
         # Conectando ações das operações internas
         self.btn_op_afd.clicked.connect(lambda: self.atualizar_dashboard_resultados(afn_para_afd(self.objeto_atual), "AFD"))
@@ -329,7 +329,7 @@ class JanelaPrincipal(QWidget):
         coluna_esquerda.addLayout(self.layout_botoes_op)
         painel_conteudo.addLayout(coluna_esquerda)
         
-        # LADO DIREITO: Exibição interna do Grafo Renderizado
+        # GRAFO
         coluna_direita = QVBoxLayout()
         
         self.btn_desenhar_grafo = QPushButton("🎨 Renderizar e Exibir Grafo Visual")
@@ -337,7 +337,7 @@ class JanelaPrincipal(QWidget):
         self.btn_desenhar_grafo.clicked.connect(self.renderizar_grafo_na_tela)
         coluna_direita.addWidget(self.btn_desenhar_grafo)
         
-        # Área de Scroll interna para o desenho
+        # 
         self.scroll_grafo = QScrollArea()
         self.scroll_grafo.setWidgetResizable(True)
         self.lbl_canvas_grafo = QLabel("O grafo renderizado aparecerá aqui.")
@@ -351,15 +351,15 @@ class JanelaPrincipal(QWidget):
         layout_master.addLayout(painel_conteudo)
         self.stacked_widget.addWidget(page)
 
-    # ---- CONTROLADOR CENTRAL DA INTERFACE (Muda as telas e dados) ----
+    # 
     def atualizar_dashboard_resultados(self, objeto, tipo):
         self.objeto_atual = objeto
         self.tipo_atual = tipo
         
         # Altera o título da área ativa
-        self.lbl_status_dashboard.setText(f"<h2>⚙️ Operações e Visualização - Estrutura Atual: [{tipo}]</h2>")
+        self.lbl_status_dashboard.setText(f"<h2> Operações e Visualização - Estrutura Atual: [{tipo}]</h2>")
         
-        # Atualiza o campo de texto estrutural
+        
         if tipo in ["AFN", "AFD"]:
             self.txt_display_dados.setText(formatar_automato(objeto))
             self.btn_desenhar_grafo.setEnabled(True)
@@ -369,11 +369,11 @@ class JanelaPrincipal(QWidget):
             self.btn_desenhar_grafo.setEnabled(False)
             self.btn_desenhar_grafo.setText("🚫 Grafos indisponíveis para Gramáticas")
             
-        # Reseta o painel de imagens interno
+        # painel de imagens interno
         self.lbl_canvas_grafo.clear()
         self.lbl_canvas_grafo.setText("O modelo estrutural mudou. Clique no botão acima para renderizar o novo grafo.")
         
-        # Esconde TODOS os botões operacionais primeiro
+        
         self.btn_op_afd.hide()
         self.btn_op_simular.hide()
         self.btn_op_minimizar.hide()
@@ -381,7 +381,7 @@ class JanelaPrincipal(QWidget):
         self.btn_op_afn.hide()
         self.btn_op_afd_de_gr.hide()
         
-        # Exibe apenas os botões válidos para o tipo de dado atual
+        
         if tipo == "AFN":
             self.btn_op_afd.show()
             self.btn_op_gr.show()
@@ -393,11 +393,11 @@ class JanelaPrincipal(QWidget):
             self.btn_op_afn.show()
             self.btn_op_afd_de_gr.show()
             
-        # Libera o menu de resultados e salta para a tela de operações automaticamente
+        
         self.btn_nav_res.setEnabled(True)
         self.stacked_widget.setCurrentIndex(2)
 
-    # ---- MÉTODOS DE CÁLCULO DO BACKEND ----
+    
     def operacao_simular_palavra(self):
         palavra, ok = QInputDialog.getText(self, "Simulador", "Insira a cadeia de teste:")
         if ok:
@@ -415,7 +415,6 @@ class JanelaPrincipal(QWidget):
         if afn: self.atualizar_dashboard_resultados(afn_para_afd(afn), "AFD")
         else: QMessageBox.warning(self, "Erro", "A gramática informada não é regular.")
 
-    # ---- LÓGICA RENDERIZADORA DO GRAPHVIZ INTEGRADO ----
     def renderizar_grafo_na_tela(self):
         if not GRAPHVIZ_DISPONIVEL:
             QMessageBox.critical(self, "Erro", "Instale a ponte do python: pip install graphviz")
@@ -464,11 +463,9 @@ class JanelaPrincipal(QWidget):
             nome_arquivo = "dashboard_automato"
             caminho_imagem = dot.render(nome_arquivo, format='png', cleanup=True)
             
-            # Carrega a imagem direto na tela atual!
             pixmap = QPixmap(caminho_imagem)
             self.lbl_canvas_grafo.setPixmap(pixmap)
             
-            # Deleta o arquivo físico pois ele já está salvo no buffer de memória da tela
             if os.path.exists(caminho_imagem):
                 os.remove(caminho_imagem)
                 
