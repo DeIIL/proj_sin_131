@@ -124,9 +124,9 @@ class JanelaPrincipal(QWidget):
         layout_sidebar.addWidget(lbl_menu)
         
         # botaos
-        self.btn_nav_afn = QPushButton(" Inserir AFN")
+        self.btn_nav_afn = QPushButton("Inserir AFN")
         self.btn_nav_gr = QPushButton(" Inserir Gramática")
-        self.btn_nav_res = QPushButton(" Operações & Grafo")
+        self.btn_nav_res = QPushButton(" Operações e Grafo")
         self.btn_nav_res.setEnabled(False) 
         
         self.btn_nav_afn.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(0))
@@ -308,22 +308,19 @@ class JanelaPrincipal(QWidget):
         self.btn_op_simular = QPushButton(" Simular Palavra")
         self.btn_op_minimizar = QPushButton(" Minimizar AFD")
         self.btn_op_gr = QPushButton(" Gerar Gramática Regular")
-        self.btn_op_afn = QPushButton(" Gerar AFN da Gramática")
-        self.btn_op_afd_de_gr = QPushButton(" Gerar AFD Direto da GR")
+        self.btn_op_afd_de_gr = QPushButton(" Gerar AF da GR")
         
         # Conectando ações das operações internas
         self.btn_op_afd.clicked.connect(lambda: self.atualizar_dashboard_resultados(afn_para_afd(self.objeto_atual), "AFD"))
         self.btn_op_minimizar.clicked.connect(lambda: self.atualizar_dashboard_resultados(minimizar_afd(self.objeto_atual), "AFD"))
         self.btn_op_gr.clicked.connect(lambda: self.atualizar_dashboard_resultados(af_para_gr(self.objeto_atual), "GR"))
         self.btn_op_simular.clicked.connect(self.operacao_simular_palavra)
-        self.btn_op_afn.clicked.connect(self.operacao_gr_para_afn)
         self.btn_op_afd_de_gr.clicked.connect(self.operacao_gr_para_afd)
         
         self.layout_botoes_op.addWidget(self.btn_op_afd)
         self.layout_botoes_op.addWidget(self.btn_op_simular)
         self.layout_botoes_op.addWidget(self.btn_op_minimizar)
         self.layout_botoes_op.addWidget(self.btn_op_gr)
-        self.layout_botoes_op.addWidget(self.btn_op_afn)
         self.layout_botoes_op.addWidget(self.btn_op_afd_de_gr)
         
         coluna_esquerda.addLayout(self.layout_botoes_op)
@@ -378,7 +375,6 @@ class JanelaPrincipal(QWidget):
         self.btn_op_simular.hide()
         self.btn_op_minimizar.hide()
         self.btn_op_gr.hide()
-        self.btn_op_afn.hide()
         self.btn_op_afd_de_gr.hide()
         
         
@@ -390,7 +386,6 @@ class JanelaPrincipal(QWidget):
             self.btn_op_minimizar.show()
             self.btn_op_gr.show()
         elif tipo == "GR":
-            self.btn_op_afn.show()
             self.btn_op_afd_de_gr.show()
             
         

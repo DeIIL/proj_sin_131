@@ -29,10 +29,10 @@ def gr_para_afn(gramatica):
         if precisa_final_extra:
             break
 
-    estado_final_extra = "FINAL"
+    estado_final_extra = "Qf"
     if precisa_final_extra:
         # Garante um nome único para o estado final extra
-        base_nome = "FINAL"
+        base_nome = "Qf"
         contador = 1
         while estado_final_extra in estados:
             estado_final_extra = f"{base_nome}_{contador}"
